@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "lfFNV3WqBwYIQdvynnzFNjmqbbyhflX3RqsJXdpGmCjnDbRg0zShHeCGMPXINUP6bWhs79OQY6Zm3lGOtw6IxA==",
+  "success": true,
+  "projectFilePath": "D:\\Programacao\\Alura\\7 days of code\\Tamagotchi API\\TamagotchiAPI\\TamagotchiAPI\\TamagotchiAPI.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\User\\.nuget\\packages\\restsharp\\109.0.2-alpha.0.5\\restsharp.109.0.2-alpha.0.5.nupkg.sha512"
+  ],
+  "logs": []
+}
