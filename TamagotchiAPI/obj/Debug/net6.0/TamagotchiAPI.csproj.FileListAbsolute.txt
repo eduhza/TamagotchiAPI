@@ -15,3 +15,20 @@ D:\Programacao\Alura\7 days of code\Tamagotchi API\TamagotchiAPI\TamagotchiAPI\o
 D:\Programacao\Alura\7 days of code\Tamagotchi API\TamagotchiAPI\TamagotchiAPI\obj\Debug\net6.0\TamagotchiAPI.pdb
 D:\Programacao\Alura\7 days of code\Tamagotchi API\TamagotchiAPI\TamagotchiAPI\obj\Debug\net6.0\TamagotchiAPI.genruntimeconfig.cache
 D:\Programacao\Alura\7 days of code\Tamagotchi API\TamagotchiAPI\TamagotchiAPI\obj\Debug\net6.0\ref\TamagotchiAPI.dll
+D:\Programacao\Alura\7 days of code\TamagotchiAPI\TamagotchiAPI\bin\Debug\net6.0\TamagotchiAPI.exe
+D:\Programacao\Alura\7 days of code\TamagotchiAPI\TamagotchiAPI\bin\Debug\net6.0\TamagotchiAPI.deps.json
+D:\Programacao\Alura\7 days of code\TamagotchiAPI\TamagotchiAPI\bin\Debug\net6.0\TamagotchiAPI.runtimeconfig.json
+D:\Programacao\Alura\7 days of code\TamagotchiAPI\TamagotchiAPI\bin\Debug\net6.0\TamagotchiAPI.dll
+D:\Programacao\Alura\7 days of code\TamagotchiAPI\TamagotchiAPI\bin\Debug\net6.0\TamagotchiAPI.pdb
+D:\Programacao\Alura\7 days of code\TamagotchiAPI\TamagotchiAPI\bin\Debug\net6.0\RestSharp.dll
+D:\Programacao\Alura\7 days of code\TamagotchiAPI\TamagotchiAPI\obj\Debug\net6.0\TamagotchiAPI.csproj.AssemblyReference.cache
+D:\Programacao\Alura\7 days of code\TamagotchiAPI\TamagotchiAPI\obj\Debug\net6.0\TamagotchiAPI.GeneratedMSBuildEditorConfig.editorconfig
+D:\Programacao\Alura\7 days of code\TamagotchiAPI\TamagotchiAPI\obj\Debug\net6.0\TamagotchiAPI.AssemblyInfoInputs.cache
+D:\Programacao\Alura\7 days of code\TamagotchiAPI\TamagotchiAPI\obj\Debug\net6.0\TamagotchiAPI.AssemblyInfo.cs
+D:\Programacao\Alura\7 days of code\TamagotchiAPI\TamagotchiAPI\obj\Debug\net6.0\TamagotchiAPI.csproj.CoreCompileInputs.cache
+D:\Programacao\Alura\7 days of code\TamagotchiAPI\TamagotchiAPI\obj\Debug\net6.0\TamagotchiAPI.csproj.CopyComplete
+D:\Programacao\Alura\7 days of code\TamagotchiAPI\TamagotchiAPI\obj\Debug\net6.0\TamagotchiAPI.dll
+D:\Programacao\Alura\7 days of code\TamagotchiAPI\TamagotchiAPI\obj\Debug\net6.0\refint\TamagotchiAPI.dll
+D:\Programacao\Alura\7 days of code\TamagotchiAPI\TamagotchiAPI\obj\Debug\net6.0\TamagotchiAPI.pdb
+D:\Programacao\Alura\7 days of code\TamagotchiAPI\TamagotchiAPI\obj\Debug\net6.0\TamagotchiAPI.genruntimeconfig.cache
+D:\Programacao\Alura\7 days of code\TamagotchiAPI\TamagotchiAPI\obj\Debug\net6.0\ref\TamagotchiAPI.dll
