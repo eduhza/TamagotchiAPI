@@ -2,6 +2,7 @@
 {
     public string NomeJogador { get; set; }
     public Jogador jogador { get; set; }
+    public Status status { get; set; }
 
 
     public MessageClass()
@@ -28,6 +29,7 @@
 
     public Status MenuInicial()
     {
+        status = Status.MENU;
         Console.WriteLine($"\n\n -------------------- MENU --------------------");
         Console.WriteLine(
             $"{jogador.Name} Escolha uma opção:\n " +
@@ -43,22 +45,36 @@
             {
                 case 1:
                     return Status.ADOTAR;
-                    break;
                 case 2:
                     return Status.COLECAO;
-                    break;
                 case 3:
                     return Status.SAIR;
-                    break;
-
+                default:
+                    return Status.MENU;
             }
         }
         Console.WriteLine("Opção inválida.");
         return Status.MENU;
     }
 
+    public int? MenuAdocao(int n)
+    {
+        status = Status.ADOTAR;
+        switch (n)
+        {
+            case 1:
+                Console.WriteLine($"\n\n -------------------- ADOTAR UM MASCOTE --------------------");
+                return null;
 
-    public int? MenuAdotar()
+            case 2:
+                return EscolherMascote();
+
+            default:
+                return null;
+        }
+    }
+
+    public int? EscolherMascote()
     {
         Console.Write("Escolha uma espécie entre 1 e 1010: ");
         string resposta = Console.ReadLine();
@@ -76,13 +92,37 @@
         return null;
     }
 
-    public void PrintColecao(List<Mascote> colecao)
+
+    public bool AdotarMascote(Mascote mascote)
     {
-        foreach (Mascote mascote in colecao)
+        Console.WriteLine($"Deseja adotar {mascote.name}?\n1 - SIM\n2 - NÃO\n3 - Voltar ao menu inicial");
+        string resposta = Console.ReadLine();
+
+        if (int.TryParse(resposta, out int n))
         {
-            Console.WriteLine(mascote.name);
+            if (n == 1)
+            {
+                Console.WriteLine($"{mascote.name} adicionado a coleção.");
+                status = Status.MENU;
+                return true;
+            }
+            if(n == 3)
+            {
+                status = Status.MENU;
+            }
+        }
+        return false;
+    }
+
+    public void PrintListName(Mascote pokelist)
+    {
+        Console.WriteLine("Lista de Pokemons:");
+        for (int i = 0; i < pokelist.results.Count; i++)
+        {
+            Console.WriteLine($"{i + 1}: {pokelist.results[i].name}");
         }
     }
+
     public void PrintMascote(Mascote mascote)
     {
         Console.Write($"\n" +
@@ -98,49 +138,13 @@
         }
     }
 
-    public bool AdotarMascote(Mascote mascote)
+    public void PrintColecao(List<Mascote> colecao)
     {
-        Console.WriteLine($"Deseja adotar {mascote.name}?\n1 - SIM\n2 - NÃO");
-        string resposta = Console.ReadLine();
-
-        if (int.TryParse(resposta, out int n))
+        Console.WriteLine("Sua coleção:");
+        foreach (Mascote mascote in colecao)
         {
-            if (n == 1)
-            {
-                Console.WriteLine($"{mascote.name} adicionado a coleção.");
-                return true;
-            }
+            Console.WriteLine(mascote.name);
         }
-        return false;
-    }
-
-    public void PrintPokeList(Mascote pokelist)
-    {
-        Console.WriteLine($"\n\n -------------------- ADOTAR UM MASCOTE --------------------");
-        Console.WriteLine("Lista de Pokemons:");
-        for (int i = 0; i < pokelist.results.Count; i++)
-        {
-            Console.WriteLine($"{i + 1}: {pokelist.results[i].name}");
-        }
-    }
-
-
-
-
-
-    public Status MenuColecao()
-    {
-        Console.WriteLine($"\n\n -------------------- MEUS MASCOTES --------------------");
-
-        Console.WriteLine("Opção inválida.");
-        return Status.MENU;
-    }
-    public Status MenuSair()
-    {
-        Console.WriteLine($"\n\n -------------------- FIM DO JOGO --------------------");
-
-        Console.WriteLine("Opção inválida.");
-        return Status.MENU;
     }
 
 }

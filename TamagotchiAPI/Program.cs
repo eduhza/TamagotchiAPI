@@ -24,13 +24,15 @@ while (playing)
             break;
 
         case Status.ADOTAR:
-            
+
+            mc.MenuAdocao(1);
             GetPokeList(); //Mostra os primeiros 20 pokemons
 
             bool adotado = false;
             while (!adotado)
             {
-                int? n = mc.MenuAdotar();
+                //int? n = mc.MenuAdotar();
+                int? n = mc.MenuAdocao(2);
 
                 if (n.HasValue)
                 {
@@ -39,9 +41,14 @@ while (playing)
                         adotado = !adotado;
                     }
                 }
+                option = mc.status;
+                if (option == Status.MENU)
+                {
+                    break;
+                }
             }
 
-            option = Status.MENU;
+            //option = Status.MENU;
             break;
 
         case Status.COLECAO:
@@ -79,21 +86,8 @@ void GetPokeList()
     RestResponse response = GetJson(pokeApiUrl, pokeListUrl);
     var pokelist = JsonSerializer.Deserialize<Mascote>(response.Content);
 
-    mc.PrintPokeList(pokelist);
+    mc.PrintListName(pokelist);
 }
-
-
-//while (true) {
-//    Console.Write($"Selecione Pokémon desejado: ");
-//    string? selectedString = Console.ReadLine();
-//    if (int.TryParse(selectedString, out int n) && n != 0) {
-//        GetPokemon(n);
-//        break;
-//    }
-//    else {
-//        Console.WriteLine("Número inválido!");
-//    }
-//}
 
 RestResponse GetJson(string baseUrl, string resource) {
     var options = new RestClientOptions(baseUrl) {
@@ -107,19 +101,3 @@ RestResponse GetJson(string baseUrl, string resource) {
 
     return response;
 }
-
-
-
-
-
-//RestResponse responseCEP = GetJson("https://viacep.com.br/ws/88063254/json/", "");
-//var Endereco = JsonSerializer.Deserialize<Endereco>(responseCEP.Content);
-//public class Endereco
-//{
-//    public string cep { get; set; }
-//    public string logradouro { get; set; }
-//    public string complemento { get; set; }
-//    public string bairro { get; set; }
-//    public string localidade { get; set; }
-//    public string uf { get; set; }
-//}
