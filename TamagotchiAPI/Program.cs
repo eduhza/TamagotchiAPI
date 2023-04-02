@@ -1,52 +1,102 @@
 ﻿using RestSharp;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 string pokeApiUrl = "https://pokeapi.co";
 string pokeListUrl = "/api/v2/pokemon/";
 
-RestResponse response = GetJson(pokeApiUrl, pokeListUrl);
+MessageClass mc = new MessageClass();
+Status option = Status.INICIO;
+Jogador jogador = new Jogador();
+List<Mascote> Colecao= new List<Mascote>();
 
-var pokelist = JsonSerializer.Deserialize<Mascote>(response.Content);
+bool playing = true;
+option = Status.MENU;
 
-Console.WriteLine("Lista de Pokemons:");
-for (int i = 0; i < pokelist.results.Count; i++)
+while (playing)
 {
-    Console.WriteLine($"{i}: {pokelist.results[i].name}");
-}
-
-Console.Write($"Selecione Pokémon desejado: ");
-string selectedString = Console.ReadLine();
-
-if (int.TryParse(selectedString, out int n))
-{
-    var pokemonhao = GetJson(pokeApiUrl, $"{pokeListUrl}{pokelist.results[n].name}");
-    Mascote mascote = JsonSerializer.Deserialize<Mascote>(pokemonhao.Content);
-    Console.Write($"\n" +
-        $"#################### POKEMON SELECIONADO ####################\n" +
-        $"Nome Pokemon: {mascote.name} \n" +
-        $"Altura: {mascote.height} \n" +
-        $"Peso: {mascote.weight} \n" +
-        $"Habilidades:\n");
-
-    foreach (var ability in mascote.abilities)
+    switch (option)
     {
-        Console.WriteLine($"\t{ability.ability.name}" );
+        case Status.MENU:
+            option = mc.MenuInicial();
+            break;
+
+        case Status.ADOTAR:
+            
+            GetPokeList(); //Mostra os primeiros 20 pokemons
+
+            bool adotado = false;
+            while (!adotado)
+            {
+                int? n = mc.MenuAdotar();
+
+                if (n.HasValue)
+                {
+                    if (GetMascoteDetails((int)n))
+                    {
+                        adotado = !adotado;
+                    }
+                }
+            }
+
+            option = Status.MENU;
+            break;
+
+        case Status.COLECAO:
+            mc.PrintColecao(Colecao);
+
+
+            option = Status.MENU;
+            break;
+
+        case Status.SAIR:
+
+            playing = false;
+            break;
     }
 }
-else
+
+bool GetMascoteDetails(int n)
 {
-    Console.WriteLine("Valor errado, você deve entrar com um número inteiro.");
+    var pokemonhao = GetJson(pokeApiUrl, $"{pokeListUrl}{n}");
+    Mascote? mascote = JsonSerializer.Deserialize<Mascote>(pokemonhao.Content);
+
+    mc.PrintMascote(mascote);
+
+    if (mc.AdotarMascote(mascote))
+    {
+        Colecao.Add(mascote);
+        return true;
+    }
+    
+    return false;
+}
+
+void GetPokeList()
+{
+    RestResponse response = GetJson(pokeApiUrl, pokeListUrl);
+    var pokelist = JsonSerializer.Deserialize<Mascote>(response.Content);
+
+    mc.PrintPokeList(pokelist);
 }
 
 
-
-
+//while (true) {
+//    Console.Write($"Selecione Pokémon desejado: ");
+//    string? selectedString = Console.ReadLine();
+//    if (int.TryParse(selectedString, out int n) && n != 0) {
+//        GetPokemon(n);
+//        break;
+//    }
+//    else {
+//        Console.WriteLine("Número inválido!");
+//    }
+//}
 
 RestResponse GetJson(string baseUrl, string resource) {
-    var options = new RestClientOptions(baseUrl)
-    {
+    var options = new RestClientOptions(baseUrl) {
         MaxTimeout = -1,
     };
     var client = new RestClient(options);
@@ -59,15 +109,6 @@ RestResponse GetJson(string baseUrl, string resource) {
 }
 
 
-
-/*
- * https://pokeapi.co/api/v2
- * https://pokeapi.co/api/v2/pokemon/{id or name}/
- * Hoje eu te desafio a desenvolver uma funcionalidade onde o jogador acessa uma lista de opções de espécies de mascotes e visualizar suas características para facilitar sua escolha antes da adoção.
- *
- * 
- * https://viacep.com.br/ws/88063254/json/
- */
 
 
 
