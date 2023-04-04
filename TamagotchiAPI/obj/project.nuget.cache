@@ -1,10 +1,15 @@
 {
   "version": 2,
-  "dgSpecHash": "vOCgZsod9y3O+NASxX/xQSjDXlV5qoNR2WEsd9yfOijjruT6WUEfWvfInwXTwxEfT4GFJ/MWY9ruj0LvbpYZfw==",
+  "dgSpecHash": "lf0aPQ3EtT0KXZG4HdlDciHOyaCObMcWIAfQ496TsLFMt3wvmg21kvKUKvkfz+L8p1YXQQV9jf5Blig9VOpwYw==",
   "success": true,
   "projectFilePath": "D:\\Programacao\\Alura\\7 days of code\\TamagotchiAPI\\TamagotchiAPI\\TamagotchiAPI.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\User\\.nuget\\packages\\restsharp\\109.0.2-alpha.0.5\\restsharp.109.0.2-alpha.0.5.nupkg.sha512"
+    "C:\\Users\\User\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
+    "C:\\Users\\User\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
+    "C:\\Users\\User\\.nuget\\packages\\restsharp\\110.0.1-alpha.0.3\\restsharp.110.0.1-alpha.0.3.nupkg.sha512",
+    "C:\\Users\\User\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
+    "C:\\Users\\User\\.nuget\\packages\\system.text.encodings.web\\7.0.0\\system.text.encodings.web.7.0.0.nupkg.sha512",
+    "C:\\Users\\User\\.nuget\\packages\\system.text.json\\7.0.2\\system.text.json.7.0.2.nupkg.sha512"
   ],
   "logs": []
 }

@@ -32,3 +32,7 @@ D:\Programacao\Alura\7 days of code\TamagotchiAPI\TamagotchiAPI\obj\Debug\net6.0
 D:\Programacao\Alura\7 days of code\TamagotchiAPI\TamagotchiAPI\obj\Debug\net6.0\TamagotchiAPI.pdb
 D:\Programacao\Alura\7 days of code\TamagotchiAPI\TamagotchiAPI\obj\Debug\net6.0\TamagotchiAPI.genruntimeconfig.cache
 D:\Programacao\Alura\7 days of code\TamagotchiAPI\TamagotchiAPI\obj\Debug\net6.0\ref\TamagotchiAPI.dll
+D:\Programacao\Alura\7 days of code\TamagotchiAPI\TamagotchiAPI\bin\Debug\net6.0\AutoMapper.dll
+D:\Programacao\Alura\7 days of code\TamagotchiAPI\TamagotchiAPI\bin\Debug\net6.0\System.Text.Encodings.Web.dll
+D:\Programacao\Alura\7 days of code\TamagotchiAPI\TamagotchiAPI\bin\Debug\net6.0\System.Text.Json.dll
+D:\Programacao\Alura\7 days of code\TamagotchiAPI\TamagotchiAPI\bin\Debug\net6.0\runtimes\browser\lib\net6.0\System.Text.Encodings.Web.dll
