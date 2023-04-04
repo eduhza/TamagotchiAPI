@@ -111,9 +111,9 @@
         return Console.ReadLine();
     }
 
-    public void PrintMascoteStatus(Mascot mascot) {
+    public void PrintMascotStatus(Mascot mascot) {
 
-        Console.WriteLine($"STATUS DE {mascot.name}:");
+        Console.WriteLine($"\nSTATUS DE {mascot.name}:");
 
         if (mascot.Food >= 7) {
             Console.WriteLine($"    {mascot.name} está alimentado.");

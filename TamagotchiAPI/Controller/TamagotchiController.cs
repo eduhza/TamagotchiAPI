@@ -105,19 +105,19 @@ public class TamagotchiController {
                                 resposta = View.MenuSelectedMascot(Colecao[n - 1]);
                                 if (int.TryParse(resposta, out int l)) {
                                     if (l == 1) {
-                                        View.PrintMascoteStatus(Colecao[n - 1]);
+                                        View.PrintMascotStatus(Colecao[n - 1]);
                                     }
                                     if (l == 2) {
                                         View.PlayMascot(Colecao[n - 1]);
                                         Colecao[n - 1].Humor += 2;
                                         Colecao[n - 1].Food -= 1;
-                                        View.PrintMascoteStatus(Colecao[n - 1]);
+                                        View.PrintMascotStatus(Colecao[n - 1]);
                                     }
                                     if (l == 3) {
                                         View.FeedMascot(Colecao[n - 1]);
                                         Colecao[n - 1].Humor += 1;
                                         Colecao[n - 1].Food += 4;
-                                        View.PrintMascoteStatus(Colecao[n - 1]);
+                                        View.PrintMascotStatus(Colecao[n - 1]);
                                     }
                                     if (l == 0) {
                                         opcaoUsuario = Menu.COLECTION;
