@@ -3,62 +3,137 @@ using System.Text.Json;
 
 public class TamagotchiController {
 
-    private Jogador Jogador { get; set; }
-    private List<Mascote> Colecao { get; set; }
+    private Player Jogador { get; set; }
+    private List<Mascot> Colecao { get; set; }
 
     private TamagotchiView View { get; set; }
 
-    private Status OpcaoUsuario { get; set; }
+    //private Menu OpcaoUsuario { get; set; }
 
     private string pokeApiUrl = "https://pokeapi.co";
     private string pokeListUrl = "/api/v2/pokemon/";
 
     public TamagotchiController() {
-        this.Jogador = new Jogador();
-        this.Colecao = new List<Mascote>();
+        this.Jogador = new Player();
+        this.Colecao = new List<Mascot>();
         this.View = new TamagotchiView();
-        this.OpcaoUsuario = new Status();
+        //this.OpcaoUsuario = new Menu();
     }
 
     public void Jogar() {
 
-        OpcaoUsuario = Status.MENU;
-        View.BoasVindas();
-        Jogador.Nome = View.Jogador.Nome;
-        Jogador.Idade = View.Jogador.Idade;
+        Menu opcaoUsuario = Menu.MAIN;
+        string resposta = "";
+        View.Welcome();
+        Jogador.Name = View.User.Name;
+        Jogador.Age = View.User.Age;
 
         bool jogar = true;
         while (jogar) {
 
-            switch (OpcaoUsuario) {
-                case Status.MENU:
-                    View.MenuInicial();
-                    OpcaoUsuario = View.Opção;
+            switch (opcaoUsuario) {
+                case Menu.MAIN:
+                    resposta = View.MainMenu();
+
+                    if (int.TryParse(resposta, out int n)) {
+                        switch (n) {
+                            case 1:
+                                opcaoUsuario = Menu.ADOPT;
+                                break;
+                            case 2:
+                                opcaoUsuario = Menu.COLECTION;
+                                break;
+                            case 3:
+                                opcaoUsuario = Menu.EXIT;
+                                break;
+                            default:
+                                opcaoUsuario = Menu.MAIN;
+                                break;
+                        }
+                    }
+                    else {
+                        View.InvalidOption();
+                        opcaoUsuario = Menu.MAIN;
+                    }
                     break;
 
-                case Status.ADOTAR:
-                    View.MenuAdocao("inicio", null);
-                    View.PrintPokeName(GetPokeList());
-                    View.MenuAdocao("escolher", null);
-                    int? numeroMascote = View.NumeroMascote;
-                    if (numeroMascote.HasValue) {
-                        Mascote? mascote =  GetMascoteDetails(numeroMascote);
-                        View.PrintMascote(mascote);
-                        View.MenuAdocao("adotar", mascote);
+                case Menu.ADOPT:
 
-                        if (View.Adotado) { Colecao.Add(mascote); }
-                       
-                        OpcaoUsuario = View.Opção;
+                    resposta = View.BeginAdoption(GetPokeList());
+
+                    if (int.TryParse(resposta, out n)) {
+                        if (n > 0 && n < 1010) {
+                            Mascot? mascot = GetMascoteDetails(n);
+                            View.PrintMascote(mascot);
+
+                            string adotar = View.AdoptAdoption(mascot);
+
+                            if (int.TryParse(adotar, out n)) {
+                                if (n == 1) {
+                                    Colecao.Add(mascot);
+                                    View.Adopted(mascot);
+                                    opcaoUsuario = Menu.MAIN;
+                                }
+                                if (n == 0) {
+                                    opcaoUsuario = Menu.MAIN;
+                                }
+                            }
+                            else {
+                                View.InvalidOption();
+                                opcaoUsuario = Menu.MAIN;
+                            }
+                            //opcaoUsuario = Menu.MAIN;
+                        }
+                    }
+                    else {
+                        View.InvalidOption();
+                        opcaoUsuario = Menu.MAIN;
+                    }
+
+
+                    break;
+
+                case Menu.COLECTION:
+
+                    resposta = View.ColectionMenu(Colecao);
+                    
+                    if (int.TryParse(resposta, out n)) {
+                        if (n > 0 && n <= Colecao.Count) {
+
+                            bool selectedMascote = true;
+                            while (selectedMascote) {
+                                resposta = View.MenuSelectedMascot(Colecao[n - 1]);
+                                if (int.TryParse(resposta, out int l)) {
+                                    if (l == 1) {
+                                        View.PrintMascoteStatus(Colecao[n - 1]);
+                                    }
+                                    if (l == 2) {
+                                        View.PlayMascot(Colecao[n - 1]);
+                                        Colecao[n - 1].Humor += 2;
+                                        Colecao[n - 1].Food -= 1;
+                                        View.PrintMascoteStatus(Colecao[n - 1]);
+                                    }
+                                    if (l == 3) {
+                                        View.FeedMascot(Colecao[n - 1]);
+                                        Colecao[n - 1].Humor += 1;
+                                        Colecao[n - 1].Food += 4;
+                                        View.PrintMascoteStatus(Colecao[n - 1]);
+                                    }
+                                    if (l == 0) {
+                                        opcaoUsuario = Menu.COLECTION;
+                                        selectedMascote = false;
+                                    }
+
+                                }
+                            }
+                        }
+                        else { opcaoUsuario = Menu.MAIN; }
                     }
 
                     break;
 
-                case Status.COLECAO:
-                    View.PrintColecao(Colecao);
-                    OpcaoUsuario = Status.MENU;
-                    break;
-
-                case Status.SAIR:
+                case Menu.EXIT:
+                    View.Exit();
                     jogar = false;
                     break;
             }
@@ -69,17 +144,21 @@ public class TamagotchiController {
 
     }
 
+    public void PlayWithMascot() {
+
+    }
 
 
-    Mascote? GetMascoteDetails(int? n) {
+
+    Mascot? GetMascoteDetails(int? n) {
         var pokemonhao = GetJson(pokeApiUrl, $"{pokeListUrl}{n}");
-        Mascote? mascote = JsonSerializer.Deserialize<Mascote>(pokemonhao.Content);
+        Mascot? mascote = JsonSerializer.Deserialize<Mascot>(pokemonhao.Content);
         return mascote;
     }
 
-    Mascote? GetPokeList() {
+    Mascot? GetPokeList() {
         RestResponse response = GetJson(pokeApiUrl, pokeListUrl);
-        var pokelist = JsonSerializer.Deserialize<Mascote>(response.Content);
+        var pokelist = JsonSerializer.Deserialize<Mascot>(response.Content);
 
         return pokelist;
     }

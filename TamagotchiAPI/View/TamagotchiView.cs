@@ -1,19 +1,14 @@
 ﻿public class TamagotchiView {
-    public Jogador Jogador { get; set; }
-    public Status Opção { get; set; }
-    public int? NumeroMascote { get; set; }
-    public Mascote? Mascote { get; set; }
-    public bool Adotado { get; set; }
+    public Player User { get; set; }
+    public int? MascotNumber { get; set; }
+    public Mascot? Mascot { get; set; }
     
-
-
     public TamagotchiView() {
         TamagotchiView view = this;
-        Jogador = new Jogador();
-        Adotado = false;
+        User = new Player();
     }
 
-    public void BoasVindas() {
+    public void Welcome() {
         Console.WriteLine(@" 
      #######                                                                    
         #       ##    #    #    ##     ####    ####   #####   ####   #    #  # 
@@ -23,109 +18,56 @@
         #     #    #  #    #  #    #  #    #  #    #    #    #    #  #    #  # 
         #     #    #  #    #  #    #   ####    ####     #     ####   #    #  #");
 
-        Console.Write("\n\nQual é seu nome? ");
-        Jogador.Nome = Console.ReadLine().ToUpper();
+        Console.Write("\n\nQual o seu nome? ");
+        User.Name = Console.ReadLine().ToUpper();
 
         Console.Write("\nQual a sua idade? ");
-
-        if (int.TryParse(Console.ReadLine().ToUpper(), out int idade)) {
-            Jogador.Idade = idade;
-        }
-        else {
-            Jogador.Idade = null;
-        }
+        User.Age = int.TryParse(Console.ReadLine().ToUpper(), out int age) 
+            ? age 
+            : null;
     }
 
-    public void MenuInicial() {
-        Opção = Status.MENU;
-        Console.WriteLine($"\n\n -------------------- MENU --------------------");
+    public string MainMenu() {
+        Console.WriteLine($"\n -------------------- MENU --------------------");
         Console.WriteLine(
-            $"{Jogador.Nome} Escolha uma opção:\n " +
-            $"1 - Adotar um mascote\n " +
-            $"2 - Ver coleção\n " +
-            $"3 - Sair");
-
-        string resposta = Console.ReadLine();
-
-        if(int.TryParse(resposta, out int n)) {
-            switch(n) {
-                case 1:
-                    Opção = Status.ADOTAR;
-                    break;
-                case 2:
-                    Opção = Status.COLECAO;
-                    break;
-                case 3:
-                    Opção = Status.SAIR;
-                    break;
-                default:
-                    Opção = Status.MENU;
-                    break;
-            }
-        }
-        else {
-            Console.WriteLine("Opção inválida.");
-            Opção = Status.MENU;
-        }
+            $"{User.Name} VOCÊ DESEJA:\n " +
+            $"    1 - Adotar um mascote\n " +
+            $"    2 - Ver coleção\n " +
+            $"    3 - Sair");
+        return Console.ReadLine();
     }
 
-    public void MenuAdocao(string subMenu, Mascote? mascote) {
-        Opção = Status.ADOTAR;
-        switch (subMenu) {
-            case "inicio":
-                Console.WriteLine($"\n\n -------------------- ADOTAR UM MASCOTE --------------------");
-                //return null;
-                break;
-
-            case "escolher":
-                Console.Write("Escolha uma espécie entre 1 e 1010: ");
-                string resposta = Console.ReadLine();
-
-                if (int.TryParse(resposta, out int n)) {
-                    if (n > 0 && n < 1010) {
-                        NumeroMascote = n;
-                    }
-                }
-                else {
-                    Console.WriteLine("Opção inválida.");
-                    NumeroMascote = null;
-                }
-
-                break;
-
-            case "adotar":
-                Adotado = false;
-                Console.WriteLine(
-                    $"Deseja adotar {mascote.name}?\n" +
-                    $"1 - SIM\n" +
-                    $"2 - NÃO\n" +
-                    $"3 - Voltar ao menu inicial");
-
-                string adotar = Console.ReadLine();
-
-                if (int.TryParse(adotar, out int k)) {
-                    if (k == 1) {
-                        Console.WriteLine($"{mascote.name} adicionado a coleção.");
-                        Opção = Status.MENU;
-                        Adotado = true;
-                    }
-                    if (k == 3) {
-                        Opção = Status.MENU;
-                    }
-                }
-                break;
-        }
+    public string BeginAdoption(Mascot pokelist) {
+        Console.WriteLine($"\n -------------------- ADOTAR UM MASCOTE --------------------");
+        PrintPokeName(pokelist);
+        Console.Write("ESCOLHA UMA ESPÉCIE ENTRE 1 e 1009: ".ToUpper());
+        return Console.ReadLine();
     }
-    public void PrintPokeName(Mascote pokelist)
+
+    public string AdoptAdoption(Mascot mascot) {
+        Console.WriteLine(
+            $"\n DESEJA ADOTAR {mascot.name}?\n" +
+            $"    1 - SIM\n" +
+            $"    2 - NÃO\n" +
+            $"    0 - Voltar ao menu inicial");
+
+        return Console.ReadLine();
+    }
+
+    public void Adopted(Mascot mascot) {
+        Console.WriteLine($"{mascot.name} ADICIONADO A COLEÇÃO!");
+    }
+
+    public void PrintPokeName(Mascot pokelist)
     {
-        Console.WriteLine("Lista de Pokemons:");
+        Console.WriteLine("LISTA DE POKEMONS:");
         for (int i = 0; i < pokelist.results.Count; i++)
         {
-            Console.WriteLine($"{i + 1}: {pokelist.results[i].name}");
+            Console.WriteLine($"    {i + 1}: {pokelist.results[i].name}");
         }
     }
 
-    public void PrintMascote(Mascote mascote)
+    public void PrintMascote(Mascot mascote)
     {
         Console.Write($"\n" +
             $"POKEMON SELECIONADO:\n" +
@@ -140,16 +82,86 @@
         }
     }
 
-    public void PrintColecao(List<Mascote> colecao) {
-        Console.WriteLine("Sua coleção:");
+    public void PrintColecao(List<Mascot> colecao) {
         int i = 1;
-        foreach (Mascote mascote in colecao)
+        foreach (Mascot mascote in colecao)
         {
-            Console.WriteLine($"Mascote {i}: {mascote.name}");
+            Console.WriteLine($"    {i}: {mascote.name}");
             i++;
         }
     }
+   
+    public string ColectionMenu(List<Mascot> colecao) {
+        Console.WriteLine($"\nQUAL MASCOTE DESEJA INTERAGIR?");
+        PrintColecao(colecao);
+        Console.WriteLine($"    0: Voltar ao menu inicial");
 
+        return Console.ReadLine();
+    }
+
+    public string MenuSelectedMascot(Mascot mascot) {
+        Console.WriteLine($"\n -------------------- {mascot.name} --------------------");
+        Console.WriteLine( $"    Altura: {mascot.height}\n    Peso: {mascot.weight}");
+
+        Console.WriteLine($"\n{User.Name} VOCÊ DESEJA:\n" +
+            $"    1 - Ver status do {mascot.name}\n" +
+            $"    2 - Brincar com {mascot.name}\n" +
+            $"    3 - Alimentar {mascot.name}\n" +
+            $"    0 - Interagir com outro mascote");
+        return Console.ReadLine();
+    }
+
+    public void PrintMascoteStatus(Mascot mascot) {
+
+        Console.WriteLine($"STATUS DE {mascot.name}:");
+
+        if (mascot.Food >= 7) {
+            Console.WriteLine($"    {mascot.name} está alimentado.");
+        }
+        else if (mascot.Food >= 5) {
+            Console.WriteLine($"    {mascot.name} está com um pouco de fome.");
+        }
+        else if (mascot.Food > 2 ) {
+            Console.WriteLine($"    {mascot.name} está faminto!");
+        }
+        else {
+            Console.WriteLine($"    {mascot.name} vai morrer de fome!");
+        }
+
+        if (mascot.Humor >= 7) {
+            Console.WriteLine($"    {mascot.name} está feliz.");
+        }
+        else if (mascot.Humor >= 5) {
+            Console.WriteLine($"    {mascot.name} está se sentindo um pouco só.");
+        }
+        else if (mascot.Humor > 2) {
+            Console.WriteLine($"    {mascot.name} está triste!");
+        }
+        else {
+            Console.WriteLine($"    {mascot.name} vai entrar em depressão!");
+        }
+    }
+
+    public Mascot PlayMascot(Mascot mascot) {
+
+        Console.WriteLine($"{mascot.name} está brincando");
+        return mascot;
+    }
+    public Mascot FeedMascot(Mascot mascot) {
+
+        Console.WriteLine($"{mascot.name} está comendo");
+        return mascot;
+    }
+
+    public void Exit() {
+        Console.WriteLine("BYE!");
+    }
+
+
+
+    public void InvalidOption() {
+        Console.WriteLine("OPÇÃO INVÁLIDA, RETORNANDO AO MENU INICIAL");
+    }
 }
 
 
