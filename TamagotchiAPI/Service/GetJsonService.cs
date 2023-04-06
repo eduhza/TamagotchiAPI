@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace TamagotchiAPI.Service {
     public class GetJsonService {
 
-        public static async Task<T> GetJsonAsync<T>(string baseUrl, string resource) {
+        public static async Task<(T, string?)> GetJsonAsync<T>(string baseUrl, string resource) {
             var options = new RestClientOptions(baseUrl) {
                 MaxTimeout = -1,
             };
@@ -20,8 +20,14 @@ namespace TamagotchiAPI.Service {
             request.AddParameter("text/plain", body, ParameterType.RequestBody);
 
             var response = client.Execute<T>(request);
+            
+            return (response.Data, response.ErrorMessage);
 
-            return response.Data;
+            //if(response.ResponseStatus != ResponseStatus.Error) {
+            //}
+            //else {
+            //    return response.ErrorMessage;
+            //}
         }
 
     }

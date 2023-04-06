@@ -10,10 +10,10 @@ public class TamagotchiController {
 
     private TamagotchiView View { get; set; }
 
-    //private MascoteMapping MascoteMapping { get; set; }
-
     private string pokeApiUrl = "https://pokeapi.co";
     private string pokeListUrl = "/api/v2/pokemon/";
+
+    private bool ApiConnectionSucess = false;
 
     public TamagotchiController() {
         this.Jogador = new Player();
@@ -59,52 +59,66 @@ public class TamagotchiController {
 
                 case Menu.ADOPT:
 
-                    resposta = View.BeginAdoption(GetPokeList());
+                    PokeList? pokeList = GetPokeList();
+                    if (ApiConnectionSucess) {
+                        View.BeginAdoption(pokeList);
+                        bool Adopted = false;
+                        while (!Adopted) {
+                            resposta = View.SelectAdoption();
 
-                    bool Adopted = false;
-                    while(!Adopted) {
-                        if (int.TryParse(resposta, out selectedMascot)) {
-                            if (selectedMascot > 0 && selectedMascot < 1010) {
-                                Pokemon? pokemon = GetPokemonDetails(selectedMascot);
-                                View.PrintPokemonDetails(pokemon);
+                            if (int.TryParse(resposta, out selectedMascot)) {
+                                if (selectedMascot > 0 && selectedMascot < 1010) {
+                                    
+                                    Pokemon? pokemon = GetPokemonDetails(selectedMascot);
 
-                                string adotar = View.AdoptAdoption(pokemon);
+                                    if (ApiConnectionSucess) {
 
-                                if (int.TryParse(adotar, out selectedMascot)) {
-                                    if (selectedMascot == 1) {
+                                        View.PrintPokemonDetails(pokemon);
 
-                                        var config = new MapperConfiguration(cfg => cfg.CreateMap<Pokemon, Mascot>());
-                                        var mapper = new Mapper(config);
+                                        while (true) {
+                                            string adotar = View.AdoptAdoption(pokemon);
+                                            if (int.TryParse(adotar, out selectedMascot)) {
+                                                if (selectedMascot == 1) {
 
-                                        var mascot = mapper.Map<Mascot>(pokemon);
+                                                    var config = new MapperConfiguration(cfg => cfg.CreateMap<Pokemon, Mascot>());
+                                                    var mapper = new Mapper(config);
 
-                                        Colecao.Add(mascot);
-                                        View.Adopted(pokemon);
-                                        Adopted = true;
-                                        opcaoUsuario = Menu.MAIN;
-                                    }
-                                    else if (selectedMascot == 0) {
-                                        opcaoUsuario = Menu.MAIN;
-                                    }
-                                    else {
-                                        View.ErrorOption();
+                                                    var mascot = mapper.Map<Mascot>(pokemon);
+
+                                                    Colecao.Add(mascot);
+                                                    View.Adopted(pokemon);
+                                                    Adopted = true;
+                                                    opcaoUsuario = Menu.MAIN;
+                                                    break;
+                                                }
+                                                else if (selectedMascot == 0) {
+                                                    Adopted = true;
+                                                    opcaoUsuario = Menu.MAIN;
+                                                    break;
+                                                }
+                                                else {
+                                                    View.ErrorOption();
+                                                }
+                                            }
+                                            else {
+                                                View.ErrorOption();
+                                            }
+                                        }
+
                                     }
                                 }
                                 else {
                                     View.ErrorOption();
-                                    //opcaoUsuario = Menu.MAIN;
                                 }
-                                //opcaoUsuario = Menu.MAIN;
+                            }
+                            else {
+                                View.ErrorOption();
                             }
                         }
-                        else {
-                            View.ErrorOption();
-                            //opcaoUsuario = Menu.ADOPT;
-                        }
                     }
-                    
-
-
+                    else {
+                        opcaoUsuario = Menu.MAIN;
+                    }
                     break;
 
                 case Menu.COLECTION:
@@ -182,12 +196,40 @@ public class TamagotchiController {
 
 
     Pokemon? GetPokemonDetails(int? n) {
-        Task<Pokemon?> pokemon = GetJsonService.GetJsonAsync<Pokemon?>(pokeApiUrl, $"{pokeListUrl}{n}");
+        var result = GetPokemonDetailsAPI(n);
+        
+        if (result.Item2 == null) {
+            ApiConnectionSucess = true;
+            return result.Item1;
+        }
+        else {
+            View.ErrorLog(result.Item2);
+            ApiConnectionSucess = false;
+            return null;
+        }
+    } 
+
+    (Pokemon?, string?) GetPokemonDetailsAPI(int? n) {
+        var pokemon = GetJsonService.GetJsonAsync<Pokemon?>(pokeApiUrl, $"{pokeListUrl}{n}");
         return pokemon.Result;
     }
 
-    PokeList GetPokeList() {
-        Task<PokeList?> pokeList = GetJsonService.GetJsonAsync<PokeList?>(pokeApiUrl, pokeListUrl);
+    PokeList? GetPokeList() {
+        var result = GetPokeListAPI();
+        
+        if(result.Item2 == null ) {
+            ApiConnectionSucess = true;
+            return result.Item1;
+        }
+        else {
+            View.ErrorLog(result.Item2);
+            ApiConnectionSucess = false;
+            return null;
+        }
+    }
+
+    (PokeList?, string?) GetPokeListAPI() {
+        var pokeList = GetJsonService.GetJsonAsync<PokeList>(pokeApiUrl, pokeListUrl);
         return pokeList.Result;
     }
 

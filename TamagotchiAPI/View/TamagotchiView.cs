@@ -42,10 +42,12 @@ public class TamagotchiView {
         return Console.ReadLine();
     }
 
-    public string BeginAdoption(PokeList pokelist) {
+    public void BeginAdoption(PokeList pokelist) {
         Console.WriteLine($"\n -------------------- ADOTAR UM MASCOTE --------------------");
         PrintPokeName(pokelist);
-        Console.Write("ESCOLHA UMA ESPÉCIE ENTRE 1 e 1009: ".ToUpper());
+    }
+    public string SelectAdoption() {
+        Console.WriteLine("\nESCOLHA UMA ESPÉCIE ENTRE 1 e 1009: ".ToUpper());
         return Console.ReadLine();
     }
 
@@ -167,6 +169,9 @@ public class TamagotchiView {
         Console.WriteLine("OPÇÃO INVÁLIDA, TENTE NOVAMENTE.");
     }
 
+    public void ErrorLog(string error) {
+        Console.WriteLine($"Erro ao coletar dados: {error}"); 
+    }
 }
 
 
