@@ -24,10 +24,32 @@ public class TamagotchiController {
     public void Jogar() {
 
         Menu opcaoUsuario = Menu.MAIN;
-        string resposta = "";
-        Jogador.Name = View.User.Name;
-        Jogador.Age = View.User.Age;
 
+        while (true) {
+            string name = View.GetUserName();
+            if(name == "") {
+                View.ErrorLog("Insira um nome.");
+            }
+            else {
+                Jogador.Name = name;
+                break;
+            }
+        }
+
+        while (true) {
+            string idadeStr = View.GetUserAge();
+
+            if(int.TryParse(idadeStr, out int age)) {
+                Jogador.Age = age;
+                break;
+            }
+            else {
+                View.ErrorLog("Insira um número inteiro.");
+            }
+        }
+        View.User = (Jogador.Name, Jogador.Age);
+
+        string resposta = "";
         bool jogar = true;
         while (jogar) {
 
@@ -75,30 +97,41 @@ public class TamagotchiController {
 
                                         View.PrintPokemonDetails(pokemon);
 
-                                        while (true) {
+                                        bool isAdopting = true;
+                                        while (isAdopting) {
                                             string adotar = View.AdoptAdoption(pokemon);
                                             if (int.TryParse(adotar, out selectedMascot)) {
-                                                if (selectedMascot == 1) {
 
-                                                    var config = new MapperConfiguration(cfg => cfg.CreateMap<Pokemon, Mascot>());
-                                                    var mapper = new Mapper(config);
+                                                switch (selectedMascot) {
+                                                    case 0:
+                                                        Adopted = true;
+                                                        isAdopting = false;
+                                                        opcaoUsuario = Menu.MAIN;
+                                                        break;
 
-                                                    var mascot = mapper.Map<Mascot>(pokemon);
+                                                    case 1:
+                                                        var config = new MapperConfiguration(cfg => cfg.CreateMap<Pokemon, Mascot>());
+                                                        var mapper = new Mapper(config);
 
-                                                    Colecao.Add(mascot);
-                                                    View.Adopted(pokemon);
-                                                    Adopted = true;
-                                                    opcaoUsuario = Menu.MAIN;
-                                                    break;
+                                                        var mascot = mapper.Map<Mascot>(pokemon);
+
+                                                        Colecao.Add(mascot);
+                                                        View.Adopted(pokemon);
+                                                        Adopted = true;
+                                                        isAdopting = false;
+                                                        opcaoUsuario = Menu.MAIN;
+                                                        break;
+
+                                                    case 2:
+                                                        Adopted = true;
+                                                        isAdopting = false;
+                                                        break;
+
+                                                    default:
+                                                        View.ErrorOption();
+                                                        break;
                                                 }
-                                                else if (selectedMascot == 0) {
-                                                    Adopted = true;
-                                                    opcaoUsuario = Menu.MAIN;
-                                                    break;
-                                                }
-                                                else {
-                                                    View.ErrorOption();
-                                                }
+
                                             }
                                             else {
                                                 View.ErrorOption();

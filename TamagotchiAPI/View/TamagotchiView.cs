@@ -20,16 +20,20 @@ public class TamagotchiView {
         #     ######  #    #  ######  #  ###  #    #    #    #       #    #  # 
         #     #    #  #    #  #    #  #    #  #    #    #    #    #  #    #  # 
         #     #    #  #    #  #    #   ####    ####     #     ####   #    #  #");
+    }
 
+    public string GetUserName() {
         Console.Write("\n\nQual o seu nome? ");
         string nome = Console.ReadLine().ToUpper();
 
-        Console.Write("\nQual a sua idade? ");
-        int? idade = int.TryParse(Console.ReadLine().ToUpper(), out int age) 
-            ? age 
-            : null;
+        return nome;
+    }
 
-        User = (nome, idade);
+    public string GetUserAge() {
+        Console.Write("\nQual a sua idade? ");
+        string idade = Console.ReadLine();
+        
+        return idade;
     }
 
     public string MainMenu() {
@@ -170,7 +174,7 @@ public class TamagotchiView {
     }
 
     public void ErrorLog(string error) {
-        Console.WriteLine($"Erro ao coletar dados: {error}"); 
+        Console.WriteLine($"Erro: {error}"); 
     }
 }
 
