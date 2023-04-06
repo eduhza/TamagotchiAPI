@@ -52,7 +52,7 @@ public class TamagotchiController {
                         }
                     }
                     else {
-                        View.InvalidOption();
+                        View.ErrorOption();
                         opcaoUsuario = Menu.MAIN;
                     }
                     break;
