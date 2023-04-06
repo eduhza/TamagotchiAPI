@@ -105,14 +105,15 @@ public class TamagotchiView {
     }
 
     public string MenuSelectedMascot(Mascot mascot) {
-        Console.WriteLine($"\n -------------------- {mascot.Name} --------------------");
-        Console.WriteLine( $"    Altura: {mascot.Height}\n    Peso: {mascot.Weight}\n    Idade: {DateTime.Now.Subtract(mascot.BirthDate)}");
 
         Console.WriteLine($"\n{User.Name} VOCÊ DESEJA:\n" +
             $"    1 - Ver status do {mascot.Name}\n" +
             $"    2 - Brincar com {mascot.Name}\n" +
             $"    3 - Alimentar {mascot.Name}\n" +
             $"    0 - Interagir com outro mascote");
+
+        Console.WriteLine($"\n -------------------- {mascot.Name} --------------------");
+        Console.WriteLine($"    Altura: {mascot.Height}\n    Peso: {mascot.Weight}\n    Idade: {DateTime.Now.Subtract(mascot.BirthDate)}");
         return Console.ReadLine();
     }
 
@@ -162,11 +163,10 @@ public class TamagotchiView {
         Console.WriteLine("BYE!");
     }
 
-
-
-    public void InvalidOption() {
-        Console.WriteLine("OPÇÃO INVÁLIDA, RETORNANDO AO MENU INICIAL");
+    public void ErrorOption() {
+        Console.WriteLine("OPÇÃO INVÁLIDA, TENTE NOVAMENTE.");
     }
+
 }
 
 

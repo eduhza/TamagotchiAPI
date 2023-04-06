@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using RestSharp;
 using System.Text.Json;
+using TamagotchiAPI.Service;
 
 public class TamagotchiController {
 
@@ -18,9 +19,6 @@ public class TamagotchiController {
         this.Jogador = new Player();
         this.Colecao = new List<Mascot>();
         this.View = new TamagotchiView();
-        //this.MascoteMapping = new MascoteMapping();
-
-
     }
 
     public void Jogar() {
@@ -37,8 +35,8 @@ public class TamagotchiController {
                 case Menu.MAIN:
                     resposta = View.MainMenu();
 
-                    if (int.TryParse(resposta, out int n)) {
-                        switch (n) {
+                    if (int.TryParse(resposta, out int selectedMascot)) {
+                        switch (selectedMascot) {
                             case 1:
                                 opcaoUsuario = Menu.ADOPT;
                                 break;
@@ -63,40 +61,48 @@ public class TamagotchiController {
 
                     resposta = View.BeginAdoption(GetPokeList());
 
-                    if (int.TryParse(resposta, out n)) {
-                        if (n > 0 && n < 1010) {
-                            Pokemon? pokemon = GetPokemonDetails(n);
-                            View.PrintPokemonDetails(pokemon);
+                    bool Adopted = false;
+                    while(!Adopted) {
+                        if (int.TryParse(resposta, out selectedMascot)) {
+                            if (selectedMascot > 0 && selectedMascot < 1010) {
+                                Pokemon? pokemon = GetPokemonDetails(selectedMascot);
+                                View.PrintPokemonDetails(pokemon);
 
-                            string adotar = View.AdoptAdoption(pokemon);
+                                string adotar = View.AdoptAdoption(pokemon);
 
-                            if (int.TryParse(adotar, out n)) {
-                                if (n == 1) {
+                                if (int.TryParse(adotar, out selectedMascot)) {
+                                    if (selectedMascot == 1) {
 
-                                    var config = new MapperConfiguration(cfg => cfg.CreateMap<Pokemon, Mascot>());
-                                    var mapper = new Mapper(config);
+                                        var config = new MapperConfiguration(cfg => cfg.CreateMap<Pokemon, Mascot>());
+                                        var mapper = new Mapper(config);
 
-                                    var mascot = mapper.Map<Mascot>(pokemon);
+                                        var mascot = mapper.Map<Mascot>(pokemon);
 
-                                    Colecao.Add(mascot);
-                                    View.Adopted(pokemon);
-                                    opcaoUsuario = Menu.MAIN;
+                                        Colecao.Add(mascot);
+                                        View.Adopted(pokemon);
+                                        Adopted = true;
+                                        opcaoUsuario = Menu.MAIN;
+                                    }
+                                    else if (selectedMascot == 0) {
+                                        opcaoUsuario = Menu.MAIN;
+                                    }
+                                    else {
+                                        View.ErrorOption();
+                                    }
                                 }
-                                if (n == 0) {
-                                    opcaoUsuario = Menu.MAIN;
+                                else {
+                                    View.ErrorOption();
+                                    //opcaoUsuario = Menu.MAIN;
                                 }
+                                //opcaoUsuario = Menu.MAIN;
                             }
-                            else {
-                                View.InvalidOption();
-                                opcaoUsuario = Menu.MAIN;
-                            }
-                            //opcaoUsuario = Menu.MAIN;
+                        }
+                        else {
+                            View.ErrorOption();
+                            //opcaoUsuario = Menu.ADOPT;
                         }
                     }
-                    else {
-                        View.InvalidOption();
-                        opcaoUsuario = Menu.MAIN;
-                    }
+                    
 
 
                     break;
@@ -105,30 +111,49 @@ public class TamagotchiController {
 
                     resposta = View.ColectionMenu(Colecao);
 
-                    if (int.TryParse(resposta, out n)) {
-                        if (n > 0 && n <= Colecao.Count) {
+                    if (int.TryParse(resposta, out selectedMascot)) {
+                        if (selectedMascot > 0 && selectedMascot <= Colecao.Count) {
 
-                            bool selectedMascote = true;
-                            while (selectedMascote) {
-                                resposta = View.MenuSelectedMascot(Colecao[n - 1]);
-                                if (int.TryParse(resposta, out int l)) {
-                                    if (l == 1) {
-                                        View.PrintMascotStatus(Colecao[n - 1]);
+                            bool notSelected = true;
+                            while (notSelected) {
+                                resposta = View.MenuSelectedMascot(Colecao[selectedMascot - 1]);
+                                if (int.TryParse(resposta, out int action)) {
+
+                                    switch (action) {
+                                        case 0:
+                                            opcaoUsuario = Menu.COLECTION;
+                                            notSelected = false;
+                                            break;
+                                        case 1:
+                                            View.PrintMascotStatus(Colecao[selectedMascot - 1]);
+                                            break;
+                                        case 2: 
+                                            PlayMascot(selectedMascot);
+                                            break;
+                                        case 3:
+                                            FeedMascot(selectedMascot);
+                                            break;
+                                        default:
+                                            View.ErrorOption();
+                                            break;
                                     }
-                                    if (l == 2) {
-                                        PlayMascot(n);
-                                    }
-                                    if (l == 3) {
-                                        FeedMascot(n);
-                                    }
-                                    if (l == 0) {
-                                        opcaoUsuario = Menu.COLECTION;
-                                        selectedMascote = false;
-                                    }
+                                }
+                                else {
+                                    View.ErrorOption();
                                 }
                             }
                         }
-                        else { opcaoUsuario = Menu.MAIN; }
+                        else {
+                            if(selectedMascot == 0) {
+                                opcaoUsuario = Menu.MAIN;
+                            }
+                            else {  
+                                View.ErrorOption(); 
+                            }
+                        }
+                    }
+                    else {
+                        View.ErrorOption();
                     }
 
                     break;
@@ -157,28 +182,17 @@ public class TamagotchiController {
 
 
     Pokemon? GetPokemonDetails(int? n) {
-        var pokeJson = GetJson(pokeApiUrl, $"{pokeListUrl}{n}");
-        Pokemon? pokemon = JsonSerializer.Deserialize<Pokemon>(pokeJson.Content);
-        return pokemon;
+        Task<Pokemon?> pokemon = GetJsonService.GetJsonAsync<Pokemon?>(pokeApiUrl, $"{pokeListUrl}{n}");
+        return pokemon.Result;
     }
 
-    PokeList? GetPokeList() {
-        RestResponse response = GetJson(pokeApiUrl, pokeListUrl);
-        var pokelist = JsonSerializer.Deserialize<PokeList>(response.Content);
-
-        return pokelist;
+    PokeList GetPokeList() {
+        Task<PokeList?> pokeList = GetJsonService.GetJsonAsync<PokeList?>(pokeApiUrl, pokeListUrl);
+        return pokeList.Result;
     }
 
-    RestResponse GetJson(string baseUrl, string resource) {
-        var options = new RestClientOptions(baseUrl) {
-            MaxTimeout = -1,
-        };
-        var client = new RestClient(options);
-        var request = new RestRequest(resource, Method.Get);
-        var body = @"";
-        request.AddParameter("text/plain", body, ParameterType.RequestBody);
-        RestResponse response = client.Execute(request);
 
-        return response;
-    }
+
+
+
 }
